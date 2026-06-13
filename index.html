@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arın Ikizogullari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0c0f;
+      --bg2:       #0f1215;
+      --bg3:       #141820;
+      --border:    #1e2530;
+      --muted:     #3a4455;
+      --text:      #c9d1e0;
+      --text-dim:  #6b7a94;
+      --accent:    #00e5a0;
+      --accent2:   #00b8ff;
+      --warn:      #ff6b6b;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Inter', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── CANVAS BACKGROUND ── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.18;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2.5rem;
+      height: 56px;
+      background: rgba(10,12,15,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-logo span { color: var(--text-dim); }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 6rem 0 2rem;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-label::before { content: '// '; color: var(--muted); }
+
+    h2 {
+      font-family: var(--mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #e8edf5;
+      margin-bottom: 2.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 56px;
+    }
+
+    .hero-prompt {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+
+    .hero-prompt span { color: var(--accent); }
+
+    .hero-name {
+      font-family: var(--mono);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-name .accent { color: var(--accent); }
+
+    #typewriter {
+      font-family: var(--mono);
+      font-size: clamp(0.95rem, 2vw, 1.15rem);
+      color: var(--text-dim);
+      min-height: 1.8em;
+      margin-bottom: 2.5rem;
+    }
+
+    #typewriter .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: var(--accent);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 3rem;
+    }
+
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: 3px;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0c0f;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover { background: #00ffc0; }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    .btn-ghost:hover { border-color: var(--accent2); color: var(--accent2); }
+
+    .hero-scroll {
+      margin-top: 5rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text);
+      letter-spacing: 0.1em;
+      animation: fadeUp 2s 2s both;
+    }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .about-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+    }
+
+    .about-block:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .about-block p {
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    .about-block p + p { margin-top: 0.8rem; }
+
+    .stat-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .stat-num {
+      font-family: var(--mono);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    /* ── SKILLS ── */
+    .skills-file {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .file-header {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .file-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .file-dot.red   { background: #ff5f57; }
+    .file-dot.amber { background: #febc2e; }
+    .file-dot.green { background: #28c840; }
+
+    .file-name {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-left: 0.5rem;
+    }
+
+    .file-body {
+      padding: 1.5rem 1.8rem;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 2;
+    }
+
+    .code-key   { color: #7eb5f7; }
+    .code-str   { color: #f7b96b; }
+    .code-arr   { color: var(--text-dim); }
+    .code-val   { color: var(--accent); }
+    .code-brace { color: var(--muted); }
+    .code-comment { color: var(--muted); font-style: italic; }
+
+    /* ── PROJECTS ── */
+    .projects-grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .project-header {
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      padding: 0.55rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .project-body {
+      padding: 1.4rem 1.6rem;
+    }
+
+    .project-title {
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #e8edf5;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .project-title a {
+      font-size: 0.72rem;
+      color: var(--accent2);
+      text-decoration: none;
+      font-weight: 400;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .project-card:hover .project-title a { opacity: 1; }
+
+    .project-desc {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .project-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .chip {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 3px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    .chip.highlight { border-color: var(--accent); color: var(--accent); }
+
+    /* ── PUBLICATION ── */
+    .pub-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 1.5rem 1.8rem;
+    }
+
+    .pub-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      background: rgba(0,229,160,0.1);
+      border: 1px solid rgba(0,229,160,0.3);
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+
+    .pub-title {
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #e8edf5;
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .pub-meta {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+      margin-bottom: 0.8rem;
+    }
+
+    .pub-link {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent2);
+      text-decoration: none;
+    }
+
+    .pub-link:hover { text-decoration: underline; }
+
+    /* ── EDUCATION ── */
+    .edu-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .edu-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.4rem 1.6rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.3rem 1rem;
+      align-items: start;
+    }
+
+    .edu-name {
+      font-family: var(--mono);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #e8edf5;
+    }
+
+    .edu-degree {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    .edu-date {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .edu-gpa {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+
+    .edu-courses {
+      grid-column: 1 / -1;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 0.4rem;
+    }
+
+    .edu-courses span { color: var(--accent2); }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding-bottom: 8rem;
+    }
+
+    .contact-block {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2.5rem;
+      text-align: center;
+    }
+
+    .contact-block p {
+      color: var(--text-dim);
+      font-size: 0.92rem;
+      margin-bottom: 2rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 0.6rem 1.2rem;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+
+    .contact-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .contact-link svg {
+      width: 16px; height: 16px;
+      fill: currentColor;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 1.5rem;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-block:first-child { grid-column: 1; }
+      .edu-card { grid-template-columns: 1fr; }
+      .edu-date { text-align: left; }
+      main { padding: 0 1.2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>~/</span>arinikiz</div>
+  <ul>
+    <li><a href="#about">about</a></li>
+    <li><a href="#skills">skills</a></li>
+    <li><a href="#projects">projects</a></li>
+    <li><a href="#publication">research</a></li>
+    <li><a href="#contact">contact</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-prompt"><span>>_</span> whoami</div>
+    <h1 class="hero-name">Arin<br>İkizoğulları<span class="accent">.</span></h1>
+    <div id="typewriter"><span id="tw-text"></span><span class="cursor"></span></div>
+    <div class="hero-tags">
+      <span class="tag">C++</span>
+      <span class="tag">Python</span>
+      <span class="tag">Systems</span>
+      <span class="tag">Security</span>
+      <span class="tag">Networks</span>
+      <span class="tag">ML</span>
+      <span class="tag">Flutter</span>
+      <span class="tag">IEEE Published</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">view projects</a>
+      <a href="https://linkedin.com/in/arinikiz" target="_blank" class="btn btn-ghost">linkedin</a>
+      <a href="https://github.com/arinikiz" target="_blank" class="btn btn-ghost">github</a>
+    </div>
+    <div class="hero-scroll">↓ scroll to explore</div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label">about</div>
+    <h2>Builder at the core.</h2>
+    <div class="about-grid">
+      <div class="about-block">
+        <p>
+          I'm a 4th Year Computer Science & Engineering student at Sabancı University (CGPA 3.65), with an exchange term at City University of
+          Hong Kong (GPA 3.56) covering Operating Systems, Internet Security Protocols, Artificial Intelligence, AI Game Programming, Software Design,
+          and Global IT Case Studies. Drawn to the engineering side of computer science, I enjoy building systems, solving complex problems, and
+          creating software from first principles. I value deep technical understanding and hands-on development over abstractions.
+        </p>
+      </div>
+      <div class="about-block stat-block">
+        <div class="stat-num">3.65</div>
+        <div class="stat-label">GPA / 4.0 — Sabancı University</div>
+      </div>
+      <div class="about-block stat-block">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Projects shipped &amp; open-sourced</div>
+      </div>
+      <div class="about-block stat-block">
+        <div class="stat-num">1</div>
+        <div class="stat-label">IEEE-published paper (SIU 2025)</div>
+      </div>
+      <div class="about-block stat-block">
+        <div class="stat-num">90</div>
+        <div class="stat-label">PTE Academic score — native-level English</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">skills</div>
+    <h2>Tech stack.</h2>
+    <div class="skills-file">
+      <div class="file-header">
+        <span class="file-dot red"></span>
+        <span class="file-dot amber"></span>
+        <span class="file-dot green"></span>
+        <span class="file-name">stack.json</span>
+      </div>
+      <div class="file-body">
+        <span class="code-brace">{</span><br>
+        &nbsp;&nbsp;<span class="code-key">"languages"</span><span class="code-arr">: {</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"proficient"</span><span class="code-arr">: [</span><span class="code-str">"C++"</span><span class="code-arr">, </span><span class="code-str">"Python"</span><span class="code-arr">],</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"competent"</span><span class="code-arr">: [</span><span class="code-str">"Dart"</span><span class="code-arr">],</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key">"familiar"</span><span class="code-arr">: [</span><span class="code-str">"Java"</span><span class="code-arr">, </span><span class="code-str">"C"</span><span class="code-arr">]</span><br>
+        &nbsp;&nbsp;<span class="code-arr">},</span><br>
+        &nbsp;&nbsp;<span class="code-key">"systems_and_networking"</span><span class="code-arr">: [</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"TCP/IP socket programming"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Wireshark traffic analysis"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Cisco Packet Tracer"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"concurrent programming (mutex / threading)"</span><br>
+        &nbsp;&nbsp;<span class="code-arr">],</span><br>
+        &nbsp;&nbsp;<span class="code-key">"security_and_ml"</span><span class="code-arr">: [</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"static malware analysis"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"phishing detection"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"unsupervised ML (K-Means, PCA)"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"LLM bias analysis"</span><br>
+        &nbsp;&nbsp;<span class="code-arr">],</span><br>
+        &nbsp;&nbsp;<span class="code-key">"mobile_and_cloud"</span><span class="code-arr">: [</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Flutter / Dart"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Firebase (Auth, Firestore)"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Android Studio"</span><br>
+        &nbsp;&nbsp;<span class="code-arr">],</span><br>
+        &nbsp;&nbsp;<span class="code-key">"tools"</span><span class="code-arr">: [</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Git / GitHub"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Visual Paradigm (UML)"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"MeshLab"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"Intel RealSense SDK"</span><span class="code-arr">,</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-str">"YOLOv5 / MiDaS / SynergyNet"</span><br>
+        &nbsp;&nbsp;<span class="code-arr">]</span><br>
+        <span class="code-brace">}</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">projects</div>
+    <h2>Things I've built.</h2>
+    <div class="projects-grid">
+
+      <!-- PhishGuard -->
+      <div class="project-card">
+        <div class="project-header">
+          <span class="file-dot red"></span>
+          <span class="file-dot amber"></span>
+          <span class="file-dot green"></span>
+        </div>
+        <div class="project-body">
+          <div class="project-title">
+            PhishGuard
+            <a href="https://github.com/ardilyce/PhishGuard" target="_blank">→ github</a>
+          </div>
+          <div class="project-desc">
+            Full-stack mobile application that detects phishing threats in real-time from text and image inputs.
+            Built in a 6-person team using Flutter and Firebase. I designed the UI for Previous Inquiries and Settings screens,
+            architected the Firestore schema, and built the DatabaseService layer for all CRUD operations.
+          </div>
+          <div class="project-stack">
+            <span class="chip highlight">Flutter</span>
+            <span class="chip highlight">Dart</span>
+            <span class="chip highlight">Firebase</span>
+            <span class="chip highlight">Firestore</span>
+            <span class="chip">Security</span>
+            <span class="chip">Mobile</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Multiplayer Quiz -->
+      <div class="project-card">
+        <div class="project-header">
+          <span class="file-dot red"></span>
+          <span class="file-dot amber"></span>
+          <span class="file-dot green"></span>
+        </div>
+        <div class="project-body">
+          <div class="project-title">
+            Multiplayer Quiz — TCP Network App
+            <a href="https://github.com/arinikiz/Quiz-Game-via-Socket-Programming" target="_blank">→ github</a>
+          </div>
+          <div class="project-desc">
+            Real-time multiplayer quiz game built from scratch on raw TCP sockets.
+            Designed a custom text-based protocol for game state sync, question delivery, and scoring.
+            Implemented thread-safe concurrent answer processing with mutex locks to eliminate race conditions.
+          </div>
+          <div class="project-stack">
+            <span class="chip highlight">C++</span>
+            <span class="chip highlight">TCP Sockets</span>
+            <span class="chip">Multithreading</span>
+            <span class="chip">Mutex</span>
+            <span class="chip">Tkinter GUI</span>
+            <span class="chip">Networking</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Malware Clustering -->
+      <div class="project-card">
+        <div class="project-header">
+          <span class="file-dot red"></span>
+          <span class="file-dot amber"></span>
+          <span class="file-dot green"></span>
+        </div>
+        <div class="project-body">
+          <div class="project-title">
+            Clustering Malware Families — Static Analysis
+            <a href="https://github.com/arinikiz/Clustering-Malware-Families-Using-Static-Analysis" target="_blank">→ github</a>
+          </div>
+          <div class="project-desc">
+            Unsupervised ML pipeline that clusters malware into families using only static metadata —
+            no execution required. Curated 500 samples via MalwareBazaar and VirusTotal APIs,
+            applied PCA + K-Means, achieving Silhouette Score 0.53 and NMI 0.55.
+          </div>
+          <div class="project-stack">
+            <span class="chip highlight">Python</span>
+            <span class="chip highlight">K-Means</span>
+            <span class="chip">PCA</span>
+            <span class="chip">Malware Analysis</span>
+            <span class="chip">VirusTotal API</span>
+            <span class="chip">Cybersecurity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LLM Bias -->
+      <div class="project-card">
+        <div class="project-header">
+          <span class="file-dot red"></span>
+          <span class="file-dot amber"></span>
+          <span class="file-dot green"></span>
+        </div>
+        <div class="project-body">
+          <div class="project-title">
+            LLM Bias Analysis — Independent Research
+            <a href="https://github.com/arinikiz/Investigating-Representational-Bias-in-LLMs" target="_blank">→ github</a>
+          </div>
+          <div class="project-desc">
+            Empirical study of representational bias (gender, ethnicity, orientation) in GPT-4o and Claude 3.7
+            using a two-phase engineered prompting approach. Automated data collection and demographic extraction
+            over 200+ model responses. Revealed persistent bias patterns despite mitigation layers.
+          </div>
+          <div class="project-stack">
+            <span class="chip highlight">Python</span>
+            <span class="chip">LLMs</span>
+            <span class="chip">GPT-4o</span>
+            <span class="chip">Claude 3.7</span>
+            <span class="chip">Data Analysis</span>
+            <span class="chip">Research</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gaze Estimation -->
+      <div class="project-card">
+        <div class="project-header">
+          <span class="file-dot red"></span>
+          <span class="file-dot amber"></span>
+          <span class="file-dot green"></span>
+        </div>
+        <div class="project-body">
+          <div class="project-title">
+            Head Pose &amp; Gaze Estimation — Vision Pipeline
+          </div>
+          <div class="project-desc">
+            Guided research reproducing and extending a computer vision pipeline for gaze estimation.
+            Integrated SynergyNet (3D head pose), YOLOv5 (object detection), and MiDaS (monocular depth)
+            to generate gaze vectors from face to observed object.
+          </div>
+          <div class="project-stack">
+            <span class="chip highlight">Python</span>
+            <span class="chip highlight">YOLOv5</span>
+            <span class="chip highlight">SynergyNet</span>
+            <span class="chip highlight">MiDaS</span>
+            <span class="chip">Computer Vision</span>
+            <span class="chip">Depth Estimation</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PUBLICATION -->
+  <section id="publication">
+    <div class="section-label">research</div>
+    <h2>Published work.</h2>
+    <div class="pub-card">
+      <div class="pub-badge">IEEE SIU 2025</div>
+      <div class="pub-title">RGB-D Camera-Enabled Digital Twin Dataset for Education</div>
+      <div class="pub-meta">
+        Co-author · Sabancı University · eCF Paper ID: SIU2025-205
+      </div>
+      <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.7; margin-bottom:1rem;">
+        Contributed to building a digital twin dataset for educational spaces using Intel RealSense D435i RGB-D cameras.
+        Processed depth and RGB data into 3D point clouds with Python and pyrealsense2,
+        then converted to mesh models using Poisson surface reconstruction and Laplacian smoothing in MeshLab.
+      </p>
+      <a href="https://ieeexplore.ieee.org/document/11112313" target="_blank" class="pub-link">→ View on IEEE Xplore</a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-label">education</div>
+    <h2>Where I've studied.</h2>
+    <div class="edu-list">
+      <div class="edu-card">
+        <div>
+          <div class="edu-name">Sabancı University</div>
+          <div class="edu-degree">B.Eng. Computer Science &amp; Engineering</div>
+        </div>
+        <div>
+          <div class="edu-date">Sep 2023 – Jun 2027</div>
+          <div class="edu-gpa">GPA 3.65 / 4.0</div>
+        </div>
+        <div class="edu-courses">
+          Istanbul, Turkey
+        </div>
+      </div>
+      <div class="edu-card">
+        <div>
+          <div class="edu-name">City University of Hong Kong</div>
+          <div class="edu-degree">Exchange Semester</div>
+        </div>
+        <div>
+          <div class="edu-date">Jan – May 2026</div>
+          <div class="edu-gpa">GPA 3.56 / 4.0</div>
+        </div>
+        <div class="edu-courses">
+          Coursework: <span>Operating Systems</span> · <span>Internet Security and e-Commerce Protocols</span> · <span>Artificial Intelligence</span> · <span>Software Design</span> · <span>AI Game Programming</span> · <span>Global IT Case Studies</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">contact</div>
+    <h2>Let's talk.</h2>
+    <div class="contact-block">
+      <div class="contact-links">
+        <a href="mailto:arinikiz@gmail.com" class="contact-link">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          arinikiz@gmail.com
+        </a>
+        <a href="https://linkedin.com/in/arinikiz" target="_blank" class="contact-link">
+          <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+          linkedin/arinikiz
+        </a>
+        <a href="https://github.com/arinikiz" target="_blank" class="contact-link">
+          <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+          github/arinikiz
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  built by arin · open source on github
+</footer>
+
+<script>
+// ── TYPEWRITER ──
+const lines = [
+  "Computer Science & Engineering student.",
+  "Building things, breaking things, and understanding why.",
+  "BSc CSE @ Sabancı · Exchange @ CityU HK.",
+];
+let lineIdx = 0, charIdx = 0, deleting = false;
+const el = document.getElementById('tw-text');
+
+function typeLoop() {
+  const line = lines[lineIdx];
+  if (!deleting) {
+    charIdx++;
+    el.textContent = line.slice(0, charIdx);
+    if (charIdx === line.length) {
+      deleting = true;
+      setTimeout(typeLoop, 2200);
+      return;
+    }
+    setTimeout(typeLoop, 42);
+  } else {
+    charIdx--;
+    el.textContent = line.slice(0, charIdx);
+    if (charIdx === 0) {
+      deleting = false;
+      lineIdx = (lineIdx + 1) % lines.length;
+      setTimeout(typeLoop, 300);
+      return;
+    }
+    setTimeout(typeLoop, 22);
+  }
+}
+typeLoop();
+
+// ── CANVAS PARTICLE GRID ──
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const COLS = 60, ROWS = 30;
+const drops = Array.from({ length: COLS }, () => Math.random() * ROWS);
+const chars = '01アイウエオカキクケコサシスセソ><{}[];//'.split('');
+
+function drawMatrix() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const fw = canvas.width / COLS;
+  const fh = canvas.height / ROWS;
+  ctx.font = `${Math.max(10, fh * 0.6)}px 'JetBrains Mono', monospace`;
+
+  for (let i = 0; i < COLS; i++) {
+    const x = i * fw;
+    const y = drops[i] * fh;
+    const ch = chars[Math.floor(Math.random() * chars.length)];
+
+    const ratio = drops[i] / ROWS;
+    ctx.fillStyle = `rgba(0, 229, 160, ${0.6 - ratio * 0.5})`;
+    ctx.fillText(ch, x, y);
+
+    if (drops[i] * fh > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i] += 0.4;
+  }
+}
+
+setInterval(drawMatrix, 60);
+
+// ── SCROLL-IN SECTIONS ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('section:not(#hero), .project-card, .pub-card, .edu-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(24px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
