@@ -36,15 +36,6 @@
       overflow-x: hidden;
     }
 
-    /* ── CANVAS BACKGROUND ── */
-    #bg-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.18;
-    }
-
     /* ── NAV ── */
     nav {
       position: fixed;
@@ -371,11 +362,11 @@
       color: var(--accent2);
       text-decoration: none;
       font-weight: 400;
-      opacity: 0;
-      transition: opacity 0.2s;
+      opacity: 1;
+      transition: color 0.2s;
     }
 
-    .project-card:hover .project-title a { opacity: 1; }
+    .project-title a:hover { text-decoration: underline; }
 
     .project-desc {
       font-size: 0.88rem;
@@ -589,8 +580,6 @@
   </style>
 </head>
 <body>
-
-<canvas id="bg-canvas"></canvas>
 
 <!-- NAV -->
 <nav>
@@ -953,7 +942,6 @@
 // ── TYPEWRITER ──
 const lines = [
   "Computer Science & Engineering student.",
-  "Building things, breaking things, and understanding why.",
   "BSc CSE @ Sabancı · Exchange @ CityU HK.",
 ];
 let lineIdx = 0, charIdx = 0, deleting = false;
@@ -983,45 +971,6 @@ function typeLoop() {
   }
 }
 typeLoop();
-
-// ── CANVAS PARTICLE GRID ──
-const canvas = document.getElementById('bg-canvas');
-const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-const COLS = 60, ROWS = 30;
-const drops = Array.from({ length: COLS }, () => Math.random() * ROWS);
-const chars = '01アイウエオカキクケコサシスセソ><{}[];//'.split('');
-
-function drawMatrix() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const fw = canvas.width / COLS;
-  const fh = canvas.height / ROWS;
-  ctx.font = `${Math.max(10, fh * 0.6)}px 'JetBrains Mono', monospace`;
-
-  for (let i = 0; i < COLS; i++) {
-    const x = i * fw;
-    const y = drops[i] * fh;
-    const ch = chars[Math.floor(Math.random() * chars.length)];
-
-    const ratio = drops[i] / ROWS;
-    ctx.fillStyle = `rgba(0, 229, 160, ${0.6 - ratio * 0.5})`;
-    ctx.fillText(ch, x, y);
-
-    if (drops[i] * fh > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
-    }
-    drops[i] += 0.4;
-  }
-}
-
-setInterval(drawMatrix, 60);
 
 // ── SCROLL-IN SECTIONS ──
 const observer = new IntersectionObserver((entries) => {
